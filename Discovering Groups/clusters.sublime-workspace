@@ -4,6 +4,14 @@
 		"selected_items":
 		[
 			[
+				"bestmat",
+				"bestmatches	statement"
+			],
+			[
+				"print",
+				"printclust	function"
+			],
+			[
 				"feed",
 				"feedlist"
 			],
@@ -52,26 +60,18 @@
 	"buffers":
 	[
 		{
-			"file": "generatefeedvector.py",
-			"settings":
-			{
-				"buffer_size": 2367,
-				"line_ending": "Unix"
-			}
-		},
-		{
 			"file": "clusters.py",
 			"settings":
 			{
-				"buffer_size": 3459,
+				"buffer_size": 9494,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "/home/dinamizador/Informacion Importante (Replicada en web)/Estudios en Curso/Python/Robot GUADALINFO_probando.py",
+			"file": "zebo.txt",
 			"settings":
 			{
-				"buffer_size": 15167,
+				"buffer_size": 37656,
 				"line_ending": "Windows"
 			}
 		},
@@ -188,6 +188,8 @@
 	},
 	"file_history":
 	[
+		"/media/DATA/Informacion Importante (Replicada en web)/Estudios en Curso/Python/Python for IA/Collective Intelligence/ActualCollectiveIntelligence/Discovering Groups/generatefeedvector.py",
+		"/media/DATA/Informacion Importante (Replicada en web)/Estudios en Curso/Python/Python for IA/Collective Intelligence/ActualCollectiveIntelligence/Discovering Groups/clusters_original.py",
 		"/media/DATA/Informacion Importante (Replicada en web)/Estudios en Curso/Python/Python for IA/Collective Intelligence/ActualCollectiveIntelligence/Discovering Groups/clusters.py",
 		"/media/DATA/Informacion Importante (Replicada en web)/Estudios en Curso/Python/Python for IA/Collective Intelligence/ActualCollectiveIntelligence/CollaborativeFiltering/recommendations.py",
 		"/home/dj/Escritorio/sublimePrueba.py",
@@ -212,7 +214,7 @@
 	],
 	"find":
 	{
-		"height": 25.0
+		"height": 26.0
 	},
 	"find_in_files":
 	{
@@ -250,52 +252,24 @@
 	"groups":
 	[
 		{
-			"selected": 2,
+			"selected": 0,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "generatefeedvector.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 2367,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2367,
-								2367
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 1188.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
 					"file": "clusters.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3459,
+						"buffer_size": 9494,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								9494,
+								9494
 							]
 						],
 						"settings":
@@ -304,19 +278,19 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 756.0,
+						"translation.y": 5106.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 0,
 					"type": "text"
 				},
 				{
-					"buffer": 2,
-					"file": "/home/dinamizador/Informacion Importante (Replicada en web)/Estudios en Curso/Python/Robot GUADALINFO_probando.py",
+					"buffer": 1,
+					"file": "zebo.txt",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 15167,
+						"buffer_size": 37656,
 						"regions":
 						{
 						},
@@ -329,17 +303,17 @@
 						],
 						"settings":
 						{
-							"syntax": "Packages/Python/Python.tmLanguage"
+							"syntax": "Packages/Text/Plain text.tmLanguage"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 1,
 					"type": "text"
 				},
 				{
-					"buffer": 3,
+					"buffer": 2,
 					"file": "blogdata.txt",
 					"semi_transient": false,
 					"settings":
@@ -363,11 +337,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 3,
+					"stack_index": 2,
 					"type": "text"
 				},
 				{
-					"buffer": 4,
+					"buffer": 3,
 					"file": "feedlist.txt",
 					"semi_transient": false,
 					"settings":
@@ -391,7 +365,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 3,
 					"type": "text"
 				}
 			]
@@ -399,7 +373,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 25.0
+		"height": 26.0
 	},
 	"input":
 	{
@@ -439,7 +413,7 @@
 	"project": "clusters.py",
 	"replace":
 	{
-		"height": 46.0
+		"height": 48.0
 	},
 	"save_all_on_build": true,
 	"select_file":
