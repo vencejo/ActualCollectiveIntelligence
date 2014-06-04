@@ -1,4 +1,5 @@
 import urllib2
+import re
 from bs4 import BeautifulSoup
 from urlparse import urljoin
 from sqlite3 import dbapi2 as sqlite
@@ -24,12 +25,13 @@ class crawler():
 		cur = self.con.execute(
 			"select rowid from %s where %s='%s'" % (table, field, value))
 		res=cur.fetchone()
-		if res == None:
+		if  res == None :
 			cur = self.con.execute(
 				"insert into %s (%s) values ('%s')" % (table,field,value))
-			res=cur.fetchone()
-
-		return res[0]
+			return cur.lastrowid
+		else:
+			#print res
+			return res[0]
 
 
 
@@ -66,7 +68,7 @@ class crawler():
 			return v.strip()
 
 	# Separate the words by any non-whitespace character
-	#  it will suffice to consider anything that isn’t a letter or a number to be a separator
+	#  it will suffice to consider anything that isnt a letter or a number to be a separator
 
 	def separatewords(self,text):
 		splitter=re.compile('\\W*')
@@ -131,3 +133,149 @@ class crawler():
 		self.dbcommit( )
 
 
+
+
+
+
+
+class searcher(object):
+	"""docstring for searcher"""
+	def __init__(self, dbname):
+		self.con = sqlite.connect(dbname)
+
+	def __del__(self):
+		self.con.close()
+
+	def getmatchrows(self, q):
+		"""  A query function that takes a query string, splits it into separate words, 
+		and constructs a SQL query to find only those URLs containing all the different words. 
+
+		This function returns two list: 
+			The first one has the url and the locations of the words in this url
+			The second one has the list of the words ids 
+		"""
+		# Strings to build the query
+		fieldlist = 'w0.urlid'
+		tablelist = ''
+		clauselist = ''
+		wordids = []
+
+		# Split the words by spaces
+		words = q.split(' ')
+		tablenumber = 0
+
+		for word in words:
+			# Get the word id
+			wordrow = self.con.execute(
+				"select rowid from wordlist where word='%s'" % word).fetchone()
+			if wordrow != None:
+				wordid = wordrow[0]
+				wordids.append(wordid)
+				if tablenumber > 0:
+					tablelist += ','
+					clauselist += ' and '
+					clauselist += 'w%d.urlid=w%d.urlid and ' % (tablenumber - 1, tablenumber)
+				fieldlist += ',w%d.location' % tablenumber
+				tablelist += 'wordlocation w%d' % tablenumber
+				clauselist += 'w%d.wordid=%d' % (tablenumber, wordid)
+				tablenumber += 1
+
+		# Create the query from the separate parts
+		fullquery = 'select %s from %s where %s' % (fieldlist, tablelist, clauselist)
+		cur = self.con.execute(fullquery)
+		rows = [ row for row in cur]
+
+		return rows, wordids
+
+
+	def getscoredlist(self, rows, wordsids):	
+		""" This method recives the parameters returned by getmatchrows:
+				rows a list who has the url and the locations of the words in this url
+				wordids  has the list of the words ids  """
+		
+		totalscores = dict([(row[0], 0) for row in rows] ) # row[0] has the url 
+
+		# This is where  you'll later put the scoring functions
+		weights = [(0.5, self.locationscore(rows)), 
+					(0.4, self.frequencyscore(rows)),
+					(0.1, self.distancescore(rows))] 
+
+		for (weight, scores) in weights:
+			for url in totalscores:
+				totalscores[url] += weight * scores[url]
+
+		return totalscores 
+
+	def geturlname(self, id):
+		return self.con.execute(
+			"select url from urllist where rowid=%d" % id).fetchone()[0]
+
+	def query(self, q):
+		rows, wordids = self.getmatchrows(q)
+		scores = self.getscoredlist(rows, wordids)
+		rankedscores = sorted([(score,url) for (url,score) in scores.items()], reverse = 1)
+		for (score, urlid) in rankedscores[0:10]:
+			print '%f\t%s' % (score, self.geturlname(urlid))
+
+	def normalizescores(self, scores, smallIsBetter=False):
+		""" The normalization function will take a dictionary of IDs and scores and return a new
+		dictionary with the same IDs, but with scores between 0 and 1. Each score is scaled
+		according to how close it is to the best result, which will always have a score of 1. All
+		you have to do is pass the function a list of scores and indicate whether a lower or
+		higher score is better
+		"""
+		vsmall=0.00001 # Avoid division by zero errors
+		if smallIsBetter:
+			minscore = min(scores.values())
+			return dict([(u, float(minscore)/max(vsmall,l)) for (u,l) in scores.items()])
+		else:
+			if scores.values() == []:
+				maxscore = 0
+			else:
+				maxscore = max(scores.values())
+
+			if maxscore == 0: 
+				maxscore = vsmall
+			return dict([(u,float(c)/maxscore) for (u,c) in scores.items()])
+
+	def frequencyscore(self,rows):
+		""" This function creates a dictionary with an entry for every unique URL ID in rows,
+		and counts how many times each item appears. It then normalizes the scores (bigger
+		is better, in this case) and returns the result.
+		"""
+		 # Remember that rows is a list who each element has the url and the locations of the words in this url
+		counts = dict([row[0], 0] for row in rows) # row[0] is the url
+		for row in rows:
+			counts[row[0]] += 1 
+		return self.normalizescores(counts)
+
+	def locationscore(self,rows):
+		"""  Usually, if a page is relevant to the search term, it will
+		appear closer to the top of the page, perhaps even in the title. To take advantage of
+		this, the search engine can score results higher if the query term appears early in the
+		document. 
+		Fortunately for us, when the pages were indexed earlier, the locations of
+		the words were recorded, and the title of the page is first in the list.
+ 		"""
+		locations = dict([(row[0], 100000) for row in rows])
+		for row in rows:
+			loc = sum(row[1:])
+			if loc < locations[row[0]]:
+				locations[row[0]] = loc
+
+		return self.normalizescores(locations, smallIsBetter=True)
+
+	def distancescore(self,rows):
+		# If there's only one word, everyone wins
+		if len(rows[0]) <= 2:
+			return dict([(row[0], 1.0) for row in rows])
+
+		# Initialize the dictionary with large values
+		mindistance = dict([row[0], 1000000] for row in rows)
+
+		for row in rows:
+			dist = sum([abs(row[i]-row[i-1]) for row in range(2, len(row))])
+			if dist < mindistance[row[0]]:
+				mindistance[row[0]] = dist
+
+		return self.normalizescores(mindistance, smallIsBetter=True)

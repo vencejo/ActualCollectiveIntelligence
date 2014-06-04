@@ -67,8 +67,18 @@
 			"file": "/media/DATA/Informacion Importante (Replicada en web)/Estudios en Curso/Python/Python for IA/Collective Intelligence/ActualCollectiveIntelligence/Searching and Ranking/searchengine.py",
 			"settings":
 			{
-				"buffer_size": 8915,
+				"buffer_size": 3886,
 				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "Package Control Messages\n========================\n\nanaconda:\n--------\n\n  Changes in 1.1.0\n  ================\n  \n   - Added linters rc configuration files support\n   - Added vagrant boxes python environments support\n   - Port gutter mark icon themes from SublimeLinter\n   - Added vagrant commands support\n   - Debug mode for jsonserver added\n  \n  Fixes\n  =====\n  \n   - Critical bug on python3, #47\n   - Wrong key in settings, #48\n   - Minor fixes on auto-format\n   - IndexError exception in is_python decorators in windows platform, #57\n   - Exception raised when no definiitions where returned on goto to imposible modules when using vagrant\n   - Linter does not try to lint mako templates now, #62\n   - Workaround to fix problem with versions of Python prior to 2.6.5 that doesn't support unicode strings as dictionary keys, #59\n   - Fix problems with unicode in linting, #66\n   - Fixes #69 being produced by a wrong indentation\n   - more SublimeLinter legacy code fixes, now Anaconda does not underlines words that are matched by the underline regex match in commen\n  ts or strings, #68\n   - rename command was not working properly due bad subdirectory comparission, #70\n   - sublime text view.file_name() method was returning None instead of empty string whith unsaved buffers, #72\n   - now anaconda uses pep8 when pylint is configured as main linter library, #75\n   - fix silently ignored configuration option pyflakes_ignore_import_*, #76\n   - SublimeLinter/Sublime Lint regexes does not work (what a surprise), replace underline logic to fix it. #77\n   - goto command can handle now multiple results, #78\n   - seems like some packagers/versions of pylint add offsets to their output while others doesnt, #81\n   - fixed incorrect behaviour affecting anaconda_linting_behaviour option, #65\n  \n  \n  Resolves\n  ========\n  \n    - merge development branch into master, Resolves #52 /cc @enagorny\n    - added anaconda_linter_mark_style config option to fill, outline or disable outlines in linted files. Resolves #61\n    - fix typos in configuration file comments. #64\n    - now anaconda shows messages in the status bar when usages, goto and doc doesn't find anything, #79\n    - added workaround to resolve, #74\n    - added JSON environment config file support, #83\n  \n  For more detaild information about those changes run git v1.1.0..v1.0.1 on git repository\n  \n\n  Changes in 1.0.1\n  ================\n  \n   - JsonServer follows now a full modular approach\n   - Jedi library has been updated to version 0.7.0alpha1\n   - Logic split in event listeners has been improved\n  \n  Resolves\n  ========\n  \n    - #43\n    - #44\n    - #45\n    - #46\n  \n\n  Changes in 1.0.0\n  ================\n  \n   - The plugin has now a single entry point\n   - anaconda_linter.py has been removed\n   - Libraries logic are now inside anaconda_lib package\n   - Commands are now inside commands package\n   - Event listeners are now inside listeners package\n   - anaconda.py has now a single one responsability, startup the plugin\n   - Some code has been cleaned\n   - Anaconda now follows a modular architecture\n   - Version has been upgraded to 1.0.0 first stable release\n  \n  Resolves\n  ========\n  \n    - #42\n  \nlaer",
+			"settings":
+			{
+				"buffer_size": 3186,
+				"line_ending": "Unix",
+				"name": "Package Control Messages",
+				"scratch": true
 			}
 		}
 	],
@@ -245,15 +255,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 8915,
+						"buffer_size": 3886,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								843,
-								843
+								792,
+								792
 							]
 						],
 						"settings":
@@ -261,10 +271,38 @@
 							"syntax": "Packages/Python/Python.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 228.0,
+						"translation.y": 108.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3186,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3186,
+								3186
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage",
+							"word_wrap": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 858.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
 					"type": "text"
 				}
 			]
