@@ -94,11 +94,9 @@ class crawler():
 		 #filling link table
 		 cur = self.con.execute("insert into link(fromid, toid) values (%d,%d)" % (urlFromid, urltoid))
 		 linkid = cur.lastrowid
-		 print linkid
 
 		 #filling linkwords
 		 wordid=self.getentryid('wordlist', 'word', linkText)
-		 print wordid
 		 self.con.execute("insert into linkwords(wordid, linkid) values (%s,%s)" % (wordid, linkid))
 
 
@@ -128,12 +126,41 @@ class crawler():
 						if url[0:4] == 'http' and not self.isindexed(url):
 							newpages.add(url)
 						linkText=self.gettextonly(link)
-						print '**** ' + linkText
 						self.addlinkref(page, url, linkText)
 
 				self.dbcommit()
 
 			pages = newpages
+
+	def calculatepagerank(self, iterations=20):
+		# clear out the current PageRank tables
+		self.con.execute('drop table if exists pagerank')
+		self.con.execute('create table pagerank(urlid primary key, score)')
+
+		# initialize every url with a PageRank of 1
+		self.con.execute('insert into pagerank select rowid, 1.0 from urllist')
+		self.dbcommit()
+
+		for i in range(iterations):
+			print "Iteration %d" % (i)
+			for (urlid,) in self.con.execute('select rowid from urllist'):
+				pr=0.15
+
+				# Loop through all the pages that link to this one
+				for (linker,) in self.con.execute('select distinct fromid from link where toid=%d'%urlid):
+					# Get the PageRank of the linker
+					linkingpr = self.con.execute('select score from pagerank where urlid=%d' % linker).fetchone()[0]
+					# Get the total number of links from the linker
+					linkingcount = self.con.execute('select count(*) from link where fromid=%d' % linker).fetchone()[0]
+					pr += 0.85*(linkingpr/linkingcount)
+
+				self.con.execute('update pagerank set score=%f where urlid=%d' % (pr, urlid))
+				self.dbcommit()
+
+
+
+
+
 
 	# Create the database tables
 	def createindextables(self):
@@ -207,14 +234,15 @@ class searcher(object):
 
 	def getscoredlist(self, rows, wordsids):	
 		""" This method recives the parameters returned by getmatchrows:
-				rows a list who has the url and the locations of the words in this url
-				wordids  has the list of the words ids  """
+				rows -> a list who has the url and the locations of the words in this url
+				wordids ->  has the list of the words ids  """
 		
 		totalscores = dict([(row[0], 0) for row in rows] ) # row[0] has the url 
 
 		# This is where  you'll later put the scoring functions
-		weights = [(0.5, self.locationscore(rows)), 
-					(0.4, self.frequencyscore(rows)),
+		weights = [(0.5, self.pagerankscore(rows)),
+					(0.2, self.locationscore(rows)), 
+					(0.2, self.frequencyscore(rows)),
 					(0.1, self.distancescore(rows))] 
 
 		for (weight, scores) in weights:
@@ -296,3 +324,24 @@ class searcher(object):
 				mindistance[row[0]] = dist
 
 		return self.normalizescores(mindistance, smallIsBetter=True)
+
+	def inboundlinkscore(self, rows):
+		""" The scoring function below creates a dictionary of counts by querying the link table
+		for every unique URL ID in rows, and then it returns the normalized scores:
+		rows -> a list who has the url and the locations of the words in this url"""
+		uniqueurls = set([row[0] for row in rows])
+		inboundcount = dict([(u, self.con.execute('select count(*) from link where toid=%d'%u).fetchone()[0])
+							for u in uniqueurls])
+
+		return self.normalizescores(inboundcount)
+
+	def pagerankscore(self, rows):
+		"""rows -> a list who has the url and the locations of the words in this url"""
+	
+		pageranks = dict([(row[0], self.con.execute('select score from pagerank where urlid=%d'% row[0]).fetchone()[0])
+							for row in rows])
+
+		maxrank=max(pageranks.values())
+		normalizedscores = dict([(u,float(l)/maxrank) for (u,l) in pageranks.items()])
+
+		return  normalizedscores

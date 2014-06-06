@@ -67,7 +67,7 @@
 			"file": "/media/DATA/Informacion Importante (Replicada en web)/Estudios en Curso/Python/Python for IA/Collective Intelligence/ActualCollectiveIntelligence/Searching and Ranking/searchengine.py",
 			"settings":
 			{
-				"buffer_size": 8915,
+				"buffer_size": 11458,
 				"line_ending": "Unix"
 			}
 		}
@@ -245,23 +245,24 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 8915,
+						"buffer_size": 11458,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								843,
-								843
+								11452,
+								11452
 							]
 						],
 						"settings":
 						{
+							"spell_check": true,
 							"syntax": "Packages/Python/Python.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 228.0,
+						"translation.y": 3636.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
