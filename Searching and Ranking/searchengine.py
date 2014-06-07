@@ -84,20 +84,18 @@ class crawler():
 		return False
 
 
-	# Add a link between two pages and store which words are actually used in that link
-	def addlinkref(self,urlFrom,urlto,linkText):
-
-		 # Get the urls ids
-		 urlFromid = self.getentryid('urllist','url', urlFrom)
-		 urltoid = self.getentryid('urllist','url', urlto)
-		 
-		 #filling link table
-		 cur = self.con.execute("insert into link(fromid, toid) values (%d,%d)" % (urlFromid, urltoid))
-		 linkid = cur.lastrowid
-
-		 #filling linkwords
-		 wordid=self.getentryid('wordlist', 'word', linkText)
-		 self.con.execute("insert into linkwords(wordid, linkid) values (%s,%s)" % (wordid, linkid))
+	# Add a link between two pages
+  	def addlinkref(self,urlFrom,urlTo,linkText):
+	    words=self.separatewords(linkText)
+	    fromid=self.getentryid('urllist','url',urlFrom)
+	    toid=self.getentryid('urllist','url',urlTo)
+	    if fromid==toid: return
+	    cur=self.con.execute("insert into link(fromid,toid) values (%d,%d)" % (fromid,toid))
+	    linkid=cur.lastrowid
+	    for word in words:
+	      if word in ignorewords: continue
+	      wordid=self.getentryid('wordlist','word',word)
+	      self.con.execute("insert into linkwords(linkid,wordid) values (%d,%d)" % (linkid,wordid))
 
 
 
