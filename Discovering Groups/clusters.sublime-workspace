@@ -67,7 +67,15 @@
 			"file": "/media/DATA/Informacion Importante (Replicada en web)/Estudios en Curso/Python/Python for IA/Collective Intelligence/ActualCollectiveIntelligence/Searching and Ranking/searchengine.py",
 			"settings":
 			{
-				"buffer_size": 11458,
+				"buffer_size": 11451,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/media/DATA/Informacion Importante (Replicada en web)/Estudios en Curso/Python/Python for IA/Collective Intelligence/ActualCollectiveIntelligence/Searching and Ranking/nn.py",
+			"settings":
+			{
+				"buffer_size": 7195,
 				"line_ending": "Unix"
 			}
 		}
@@ -168,6 +176,8 @@
 	},
 	"file_history":
 	[
+		"/media/DATA/Informacion Importante (Replicada en web)/Estudios en Curso/Python/Python for IA/Collective Intelligence/PCI_Code Folder/chapter4/nn.py",
+		"/media/DATA/Informacion Importante (Replicada en web)/Estudios en Curso/Python/Python for IA/Collective Intelligence/PCI_Code Folder/chapter4/searchengine.py",
 		"/media/DATA/Informacion Importante (Replicada en web)/Estudios en Curso/Python/Python for IA/Collective Intelligence/ActualCollectiveIntelligence/Discovering Groups/feedlist.txt",
 		"/media/DATA/Informacion Importante (Replicada en web)/Estudios en Curso/Python/Python for IA/Collective Intelligence/ActualCollectiveIntelligence/Discovering Groups/blogdata.txt",
 		"/media/DATA/Informacion Importante (Replicada en web)/Estudios en Curso/Python/Python for IA/Collective Intelligence/ActualCollectiveIntelligence/Discovering Groups/zebo.txt",
@@ -236,7 +246,7 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 1,
 			"sheets":
 			[
 				{
@@ -245,15 +255,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 11458,
+						"buffer_size": 11451,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								11452,
-								11452
+								84,
+								84
 							]
 						],
 						"settings":
@@ -262,7 +272,35 @@
 							"syntax": "Packages/Python/Python.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 3636.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "/media/DATA/Informacion Importante (Replicada en web)/Estudios en Curso/Python/Python for IA/Collective Intelligence/ActualCollectiveIntelligence/Searching and Ranking/nn.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 7195,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								7106,
+								7106
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 2944.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,

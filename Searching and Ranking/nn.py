@@ -1,6 +1,9 @@
 from math import tanh
 from sqlite3 import dbapi2 as sqlite
 
+def dtanh(y):
+	return 1.0 - y*y
+
 class searchnet:
 	"""docstring for searchnet"""
 	def __init__(self, dbname):
@@ -19,7 +22,7 @@ class searchnet:
 		"""Getstrength, determines the current strength of a connection. Because new
 		connections are only created when necessary, this method has to return a default
 		value if there are no connections. For links from words to the hidden layer, the
-		default value will be –0.2 so that, by default, extra words will have a slightly negative
+		default value will be -0.2 so that, by default, extra words will have a slightly negative
 		effect on the activation level of a hidden node. For links from the hidden layer to
 		URLs, the method will return a default value of 0.
 		"""
@@ -77,10 +80,10 @@ class searchnet:
 	def getallhiddenids(self, wordids, urlids):
 		""" connections in the database, and build, in memory, the portion of the network that
 		is relevant to a specific query. The first step is to create a function that finds all the
-		nodes from the hidden layer that are relevant to a specific query—in this case, they
+		nodes from the hidden layer that are relevant to a specific query-in this case, they
 		must be connected to one of the words in the query or to one of the URLs in the
 		results. Since the other nodes will not be used either to determine an outcome or to
-		train the network, it’s not necessary to include them: """
+		train the network, its not necessary to include them: """
 
 		l1 = {}
 		for wordid in wordids:
@@ -97,16 +100,16 @@ class searchnet:
 	def setupnetwork(self, wordids, urlids):
 		""" You will also need a method for constructing the relevant network with all the cur-
 		rent weights from the database. This function sets a lot of instance variables for this
-		class—the list of words, query nodes and URLs, the output level of every node, and
+		class the list of words, query nodes and URLs, the activation level of every node, and
 		the weights of every link between nodes. The weights are taken from the database
 		using the functions that were defined earlier.
 		"""
 		# value lists
 		self.wordids = wordids
-		self.hiddenids = self.setallhiddenids(wordids, urlids)
+		self.hiddenids = self.getallhiddenids(wordids, urlids)
 		self.urlids = urlids
 
-		# node outputs
+		# Activation level of the nodes
 		self.ai = [1.0]*len(self.wordids)
 		self.ah = [1.0]*len(self.hiddenids)
 		self.ao = [1.0]*len(self.urlids)
@@ -118,8 +121,8 @@ class searchnet:
 
 	def feedforward(self):
 		""" the feedforward algorithm. This takes a list of inputs,
-		pushes them through the network, and returns the output of all the nodes in the out-
-		put layer. In this case, since you’ve only constructed a network with words in the
+		pushes them through the network, and returns the output of all the nodes in the out
+		put layer. In this case, since youve only constructed a network with words in the
 		query, the output from all the input nodes will always be 1:
 		"""
 		# The only inputs are the query words
@@ -145,3 +148,54 @@ class searchnet:
 	def getresult(self, wordids, urlids):
 		self.setupnetwork(wordids,urlids)
 		return self.feedforward()
+
+	def backPropagate(self, targets, N=0.5):
+		# Calculate errors for output
+		output_deltas = [0.0] * len(self.urlids)
+		for k in range(len(self.urlids)):
+			error = targets[k]-self.ao[k]
+			output_deltas[k] = dtanh(self.ao[k]) * error 
+
+		# Calculate errors for hidden layer
+		hidden_deltas = [0.0] * len(self.hiddenids)
+		for j in range(len(self.hiddenids)):
+			error = 0.0
+			for k in range(len(self.urlids)):
+				error = error + output_deltas[k]*self.wo[j][k]
+			hidden_deltas[j] = dtanh(self.ah[j])*error
+
+		# Update output weights
+		for j in range(len(self.hiddenids)):
+			for k in range(len(self.urlids)):
+				change = output_deltas[k]*self.ah[j]
+				self.wo[j][k] = self.wo[j][k] + N*change
+
+		# Update input weights
+		for i in range(len(self.wordids)):
+			for j in range(len(self.hiddenids)):
+				change = hidden_deltas[j] * self.ai[i]
+				self.wi[i][j] = self.wi[i][j] + N*change
+
+
+	def trainquery(self, wordids, urlids, selectedurl):
+		# generate a hidden node if necessary
+		self.generatehiddennode(wordids, urlids)
+
+		self.setupnetwork(wordids, urlids)
+		self.feedforward()
+		targets=[0.0]*len(urlids)
+		targets[urlids.index(selectedurl)] = 1.0
+		error = self.backPropagate(targets)
+		self.updatedatabase()
+
+	def updatedatabase(self):
+		# set them to database values
+		for i in range(len(self.wordids)):
+			for j in range(len(self.hiddenids)):
+				self.setstrength(self.wordids[i],self. hiddenids[j],0,self.wi[i][j])
+		for j in range(len(self.hiddenids)):
+			for k in range(len(self.urlids)):
+				self.setstrength(self.hiddenids[j],self.urlids[k],1,self.wo[j][k])
+		self.con.commit()
+
+
